@@ -1,0 +1,15 @@
+Revenue = SUM('sales_transactions'[line_revenue])
+
+Units Sold = SUM('sales_transactions'[Quantity])
+
+Orders = DISTINCTCOUNT('sales_transactions'[InvoiceNo])
+
+Identified Customers = DISTINCTCOUNT('sales_transactions'[CustomerID])
+
+Average Order Value = DIVIDE([Revenue], [Orders])
+
+Revenue per Identified Customer = DIVIDE([Revenue], [Identified Customers])
+
+Repeat Customers = CALCULATE(DISTINCTCOUNT('customer_rfm'[CustomerID]), 'customer_rfm'[frequency] >= 2)
+
+Repeat Customer Rate = DIVIDE([Repeat Customers], DISTINCTCOUNT('customer_rfm'[CustomerID]))
