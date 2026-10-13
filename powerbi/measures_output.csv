@@ -1,0 +1,13 @@
+DAX Measure,Dashboard Element,Raw Value,Formatted Output
+Net Revenue,KPI Card 1,4663255.69,"$4,663,255.69 ($4.66M)"
+Units Sold,KPI Card 2,2388383.0,"2,388,383 (2.39M)"
+Total Orders,KPI Card 3,8556.0,"8,556"
+Identified Customers,KPI Card 4,2997.0,"2,997"
+Average Order Value,KPI Card 5,545.03,$545.03
+Revenue per Customer,Secondary Metric,1555.97,"$1,555.97"
+UK Revenue,Bar Chart #1 Leader,4052207.52,"$4,052,207.52 ($4.05M)"
+UK Revenue Share %,Market Share,86.9,86.90%
+Repeat Customers,Donut Chart Segment,1534.0,"1,534"
+Single Order Customers,Donut Chart Segment,1463.0,"1,463"
+Repeat Customer Rate %,Donut Chart Share,51.18,51.18%
+VIP Champion Customers (444),RFM Segment Table,0.0,0

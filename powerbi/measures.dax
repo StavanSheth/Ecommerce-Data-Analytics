@@ -1,15 +1,134 @@
-Revenue = SUM('sales_transactions'[line_revenue])
+// ==============================================================================
+// BABY EXPLANATION OF DAX:
+// DAX (Data Analysis Expressions) is like Excel formulas with superpowers!
+// Instead of calculating one cell at a time, DAX calculates numbers across
+// hundreds of thousands of receipts in milliseconds.
+// ==============================================================================
 
-Units Sold = SUM('sales_transactions'[Quantity])
+// ------------------------------------------------------------------------------
+// 1. NET REVENUE (CARD 1: $4.66M)
+// Baby Explanation: "Add up all the money collected from real, non-cancelled sales."
+// Format as: Currency ($#,##0.00) or Display in Millions ($4.66M)
+// ------------------------------------------------------------------------------
+Net Revenue = 
+SUM('sales_transactions'[line_revenue])
 
-Orders = DISTINCTCOUNT('sales_transactions'[InvoiceNo])
 
-Identified Customers = DISTINCTCOUNT('sales_transactions'[CustomerID])
+// ------------------------------------------------------------------------------
+// 2. UNITS SOLD (CARD 2: 2.39M)
+// Baby Explanation: "Add up every single toy and item placed in shoppers' bags."
+// Format as: Whole Number (#,##0) or Display in Millions (2.39M)
+// ------------------------------------------------------------------------------
+Units Sold = 
+SUM('sales_transactions'[Quantity])
 
-Average Order Value = DIVIDE([Revenue], [Orders])
 
-Revenue per Identified Customer = DIVIDE([Revenue], [Identified Customers])
+// ------------------------------------------------------------------------------
+// 3. TOTAL ORDERS (CARD 3: 8,556)
+// Baby Explanation: "Count how many unique checkout receipts/invoices we had."
+// DISTINCTCOUNT ensures an order with 10 items is still counted as 1 order!
+// ------------------------------------------------------------------------------
+Total Orders = 
+DISTINCTCOUNT('sales_transactions'[InvoiceNo])
 
-Repeat Customers = CALCULATE(DISTINCTCOUNT('customer_rfm'[CustomerID]), 'customer_rfm'[frequency] >= 2)
 
-Repeat Customer Rate = DIVIDE([Repeat Customers], DISTINCTCOUNT('customer_rfm'[CustomerID]))
+// ------------------------------------------------------------------------------
+// 4. IDENTIFIED CUSTOMERS (CARD 4: 2,997)
+// Baby Explanation: "Count how many distinct named shoppers with customer IDs visited."
+// ------------------------------------------------------------------------------
+Identified Customers = 
+DISTINCTCOUNT('sales_transactions'[CustomerID])
+
+
+// ------------------------------------------------------------------------------
+// 5. AVERAGE ORDER VALUE (AOV) (CARD 5: $545.03)
+// Baby Explanation: "On average, how much money did a shopper spend per checkout?"
+// DIVIDE divides Net Revenue by Total Orders.
+// ------------------------------------------------------------------------------
+Average Order Value = 
+DIVIDE(
+    [Net Revenue], 
+    [Total Orders], 
+    0
+)
+
+
+// ------------------------------------------------------------------------------
+// 6. REVENUE PER CUSTOMER ($1,555.97)
+// Baby Explanation: "If you take all sales and divide equally across identified shoppers."
+// ------------------------------------------------------------------------------
+Revenue per Customer = 
+DIVIDE(
+    [Net Revenue], 
+    [Identified Customers], 
+    0
+)
+
+
+// ------------------------------------------------------------------------------
+// 7. UNITED KINGDOM REVENUE ($4,052,207.52)
+// Baby Explanation: "How much money came specifically from buyers living in the UK?" (86.9%)
+// ------------------------------------------------------------------------------
+UK Revenue = 
+CALCULATE(
+    [Net Revenue], 
+    'sales_transactions'[Country] = "United Kingdom"
+)
+
+
+// ------------------------------------------------------------------------------
+// 8. UK REVENUE SHARE % (86.9%)
+// Baby Explanation: "What percentage of our entire shop's earnings came from the UK?"
+// ------------------------------------------------------------------------------
+UK Revenue Share % = 
+DIVIDE(
+    [UK Revenue], 
+    [Net Revenue], 
+    0
+)
+
+
+// ------------------------------------------------------------------------------
+// 9. REPEAT CUSTOMERS (1,369 Customers)
+// Baby Explanation: "How many customers came back and shopped 2 or more times?"
+// ------------------------------------------------------------------------------
+Repeat Customers = 
+CALCULATE(
+    DISTINCTCOUNT('customer_rfm'[CustomerID]), 
+    'customer_rfm'[frequency] >= 2
+)
+
+
+// ------------------------------------------------------------------------------
+// 10. SINGLE ORDER CUSTOMERS (1,628 Customers)
+// Baby Explanation: "How many customers bought something once and never came back?"
+// ------------------------------------------------------------------------------
+Single Order Customers = 
+CALCULATE(
+    DISTINCTCOUNT('customer_rfm'[CustomerID]), 
+    'customer_rfm'[frequency] = 1
+)
+
+
+// ------------------------------------------------------------------------------
+// 11. REPEAT CUSTOMER RATE % (45.68%)
+// Baby Explanation: "What percentage of our customer base are loyal repeat buyers?"
+// Format as: Percentage (0.0%)
+// ------------------------------------------------------------------------------
+Repeat Customer Rate % = 
+DIVIDE(
+    [Repeat Customers], 
+    DISTINCTCOUNT('customer_rfm'[CustomerID]), 
+    0
+)
+
+
+// ------------------------------------------------------------------------------
+// 12. VIP CHAMPIONS (RFM Score 444)
+// Baby Explanation: "Shoppers who bought recently (4), shop often (4), and spend big (4)!"
+// ------------------------------------------------------------------------------
+VIP Champion Customers = 
+CALCULATE(
+    DISTINCTCOUNT('customer_rfm'[CustomerID]), 
+    'customer_rfm'[rfm_segment_score] = "444"
+)
